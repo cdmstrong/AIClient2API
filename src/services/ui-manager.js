@@ -17,6 +17,8 @@ import * as oauthApi from '../ui-modules/oauth-api.js';
 import * as customModelsApi from '../ui-modules/custom-models-api.js';
 import * as accessApi from '../ui-modules/access-api.js';
 import * as eventBroadcast from '../ui-modules/event-broadcast.js';
+import * as chatgpt2apiIntegration from '../ui-modules/chatgpt2api-integration.js';
+import * as codexOAuthIntegration from '../auth/codex-oauth-integration.js';
 import { HELP_DATA, API_GUIDE_DATA, API_EXAMPLES, formatHelpText, formatApiGuideText } from '../utils/docs-data.js';
 
 // Re-export from event-broadcast module
@@ -139,6 +141,46 @@ export async function handleUIApiRequests(method, pathParam, req, res, currentCo
     // Clear today's log file
     if (method === 'POST' && pathParam === '/api/system/clear-log') {
         return await systemApi.handleClearTodayLog(req, res);
+    }
+
+    // ChatGPT2API Integration - Get integration status
+    if (method === 'GET' && pathParam === '/api/chatgpt2api/status') {
+        return await chatgpt2apiIntegration.handleGetChatGPT2APIIntegrationStatus(req, res, currentConfig, providerPoolManager);
+    }
+
+    // ChatGPT2API Integration - Preview accounts before import
+    if (method === 'POST' && pathParam === '/api/chatgpt2api/preview') {
+        return await chatgpt2apiIntegration.handlePreviewChatGPT2APIAccounts(req, res);
+    }
+
+    // ChatGPT2API Integration - Import accounts to provider pool
+    if (method === 'POST' && pathParam === '/api/chatgpt2api/import') {
+        return await chatgpt2apiIntegration.handleImportChatGPT2APIAccounts(req, res, currentConfig, providerPoolManager);
+    }
+
+    // ChatGPT2API Integration - Sync account status
+    if (method === 'POST' && pathParam === '/api/chatgpt2api/sync') {
+        return await chatgpt2apiIntegration.handleSyncChatGPT2APIAccounts(req, res, currentConfig, providerPoolManager);
+    }
+
+    // Codex OAuth Integration - Get integration status
+    if (method === 'GET' && pathParam === '/api/codex/status') {
+        return await codexOAuthIntegration.handleGetCodexIntegrationStatus(req, res, currentConfig, providerPoolManager);
+    }
+
+    // Codex OAuth Integration - Preview accounts before import
+    if (method === 'POST' && pathParam === '/api/codex/preview') {
+        return await codexOAuthIntegration.handlePreviewCodexAccounts(req, res);
+    }
+
+    // Codex OAuth Integration - Import accounts to provider pool
+    if (method === 'POST' && pathParam === '/api/codex/import') {
+        return await codexOAuthIntegration.handleImportCodexAccounts(req, res, currentConfig, providerPoolManager);
+    }
+
+    // Codex OAuth Integration - Sync account status
+    if (method === 'POST' && pathParam === '/api/codex/sync') {
+        return await codexOAuthIntegration.handleSyncCodexAccounts(req, res, currentConfig, providerPoolManager);
     }
 
     // Get provider pools summary
